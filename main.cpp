@@ -1,6 +1,6 @@
 #include<iostream>
 #include <ostream>
-#include "node.h"
+#include "iterator.h"
 using namespace std;
 template <typename T>
 class List {
@@ -9,23 +9,32 @@ protected:
         Node<T> *tail;
         int nodos;
 public:
+        typedef Iterator<T> iterator;
+        
+        List(const List &lista)
+        {this->head = lista.head; 
+        this->tail = lista.tail;}
 
-        /*
-        List(T*){ 
-			//Constructor  parametro, 
-			//llena una lista a partir de un array
+        List(T* array, int tamanio) {
+        this->head = nullptr;
+        this->tail = this->head;
+        for (int i = 0; i < tamanio; i++) {
+            push_back(array[i]);
         }
-*/
-        List(Node<T>* newNode){ 
-			head=newNode;
-            tail=newNode;
+        this->tail->next = nullptr;
         }
 
-        List(){
-            head=nullptr;
-            tail=nullptr;
-            nodos=0;
+    List(Node<T>* node){
+        this->head = node;
+        this->tail = node;
+    }
+
+    List()
+    {
+        this->head = nullptr;
+        this->tail = nullptr;
         }
+
         ~List(){
             clear();
         }
@@ -36,6 +45,7 @@ public:
                 return this->head->data;
             cout << "La lista esta vacia"<< "\n";
             }
+            
         
 		  // Retorna una referencia al ultimo elemento
 		T back(){
@@ -179,37 +189,15 @@ public:
             this->tail=temporal;}
         }
 
-		  // Imprime la lista con cout
-        template<typename __T>
-        inline friend ostream& operator<<
-        (ostream& os, const List &lista){
-            Node<T>* pointer = lista.head;
-            while(pointer != nullptr){
-                os<<pointer->data << " ";
-                pointer = pointer->next;
-            }
-            return os;
-        }
-        void print()
-    {
-    Node<T>* nodoaimprimir = new Node<T>;
-    nodoaimprimir = this->head;
-	if (nodos == 1)
-		cout << nodoaimprimir->data;
-	else if (nodos == 0)
-	{
-		cout << "Lista vacia";
-	}
-	else
-	{
-		while (nodoaimprimir != nullptr) {
-			cout << nodoaimprimir->data << " ";
-			nodoaimprimir = nodoaimprimir->next;
-		}
-	}
-	cout << endl;
-}
+		 friend std::ostream& operator << (std::ostream &os, const List & lista){
+        Node<T> * pointer = lista.head;
+        do{
+            os << pointer->data << " ";
+            pointer = pointer->next;
+        }while(pointer != nullptr);
 
+        return os;
+    }
     
 };
 
@@ -219,12 +207,10 @@ int main (int, char*[]){
     l1->push_front(50);
     l1->push_front(2);
     l1->push_back(100);
-    l1->print();
+    cout<< *l1<<"\n";
     l1->pop_front();
-    l1->print();
     l1->reverse();
-    l1->print();
     l1->sort();
-    l1->print();
+    cout<< *l1<<"\n";
     return 0;
 }
